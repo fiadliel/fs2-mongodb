@@ -39,7 +39,20 @@ object syntax {
     }
   }
 
-  implicit class MongoIterableSyntax[A <: MongoIterable[B], B](val iterable: A) extends AnyVal {
+  implicit class MongoIterableSyntax[A, B](iterable: A)(implicit ev: A <:< MongoIterable[B],
+                                                        S: Strategy) {
+    private def asyncNext[T](cursor: AsyncBatchCursor[T]): Task[Option[Seq[T]]] = {
+      if (cursor.isClosed) {
+        Task.now(None)
+      } else {
+        Task.suspend {
+          Task.async { cb =>
+            cursor.next(cb.toMongo(_.asScala))
+          }
+        }
+      }
+    }
+
     private def closeCursor(maybeCursor: Option[AsyncBatchCursor[_]]): Task[Unit] =
       maybeCursor.fold(Task.now(()))(cursor => Task.delay(cursor.close()))
 
@@ -60,25 +73,14 @@ object syntax {
     private def asyncBatchCursor(implicit S: Strategy): Task[Option[AsyncBatchCursor[B]]] = {
       Task.suspend {
         Task.async { cb =>
-          iterable.batchCursor(cb.toMongo)
+          ev(iterable).batchCursor(cb.toMongo)
         }
       }
     }
 
-    def stream(implicit S: Strategy): Stream[Task, B] = {
+    val stream: Stream[Task, B] = {
       Stream.bracket(asyncBatchCursor)(iterate, closeCursor)
     }
   }
 
-  def asyncNext[T](cursor: AsyncBatchCursor[T])(implicit S: Strategy): Task[Option[Seq[T]]] = {
-    if (cursor.isClosed) {
-      Task.now(None)
-    } else {
-      Task.suspend {
-        Task.async { cb =>
-          cursor.next(cb.toMongo(_.asScala))
-        }
-      }
-    }
-  }
 }

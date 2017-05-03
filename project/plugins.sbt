@@ -7,5 +7,4 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "1.1")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 
-
 libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.21"

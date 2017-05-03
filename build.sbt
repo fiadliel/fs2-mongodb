@@ -27,4 +27,3 @@ pomExtra in Global := {
     </developer>
   </developers>
 }
-
