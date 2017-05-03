@@ -10,3 +10,26 @@ libraryDependencies += "org.mongodb" % "mongodb-driver-async" % "3.0.4"
 libraryDependencies += "co.fs2"      %% "fs2-core"            % "0.9.5"
 
 enablePlugins(GitVersioning)
+
+pomExtra in Global := {
+  <url>https://github.com/fiadliel/fs2-mongodb</url>
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:github.com/fiadliel/fs2-mongodb.git</connection>
+    <developerConnection>scm:git:git@github.com:fiadliel/fs2-mongodb.git</developerConnection>
+    <url>github.com/fiadliel/fs2-mongodb</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>fiadliel</id>
+      <name>Gary Coady</name>
+      <url>https://www.lyranthe.org/</url>
+    </developer>
+  </developers>
+}
+
