@@ -19,11 +19,6 @@ pomExtra in Global := {
       <url>https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE</url>
     </license>
   </licenses>
-  <scm>
-    <connection>scm:git:github.com/fiadliel/fs2-mongodb.git</connection>
-    <developerConnection>scm:git:git@github.com:fiadliel/fs2-mongodb.git</developerConnection>
-    <url>github.com/fiadliel/fs2-mongodb</url>
-  </scm>
   <developers>
     <developer>
       <id>fiadliel</id>
