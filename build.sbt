@@ -11,19 +11,9 @@ libraryDependencies += "co.fs2"      %% "fs2-core"            % "0.9.5"
 
 enablePlugins(GitVersioning)
 
-pomExtra in Global := {
-  <url>https://github.com/fiadliel/fs2-mongodb</url>
-  <licenses>
-    <license>
-      <name>MIT</name>
-      <url>https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <id>fiadliel</id>
-      <name>Gary Coady</name>
-      <url>https://www.lyranthe.org/</url>
-    </developer>
-  </developers>
-}
+homepage in Global := Some(url("https://github.com/fiadliel/fs2-mongodb"))
+licenses in Global += "MIT" -> url("https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE")
+developers in Global += Developer("fiadliel",
+                                  "Gary Coady",
+                                  "gary@lyranthe.org",
+                                  url("https://www.lyranthe.org/"))
