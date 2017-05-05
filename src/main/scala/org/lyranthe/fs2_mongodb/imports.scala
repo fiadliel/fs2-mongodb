@@ -7,10 +7,9 @@ import fs2.util.Async
 
 import scala.collection.JavaConverters._
 
-object implicits {
+object imports {
 
-  private[implicits] implicit class AsyncToMongoOpt[A](
-      val cb: Either[Throwable, Option[A]] => Unit)
+  private[imports] implicit class AsyncToMongoOpt[A](val cb: Either[Throwable, Option[A]] => Unit)
       extends AnyVal {
     def toMongo: SingleResultCallback[A] = toMongo(identity)
 
@@ -26,7 +25,7 @@ object implicits {
     }
   }
 
-  private[implicits] implicit class AsyncToMongo[A](val cb: Either[Throwable, A] => Unit)
+  private[imports] implicit class AsyncToMongo[A](val cb: Either[Throwable, A] => Unit)
       extends AnyVal {
     def toMongo: SingleResultCallback[A] = toMongo(identity)
 
