@@ -3,11 +3,14 @@ package org.lyranthe.fs2_mongodb
 import com.mongodb.async.client.MongoIterable
 import com.mongodb.async.{AsyncBatchCursor, SingleResultCallback}
 import fs2._
+import fs2.util.Async
 
 import scala.collection.JavaConverters._
 
-object syntax {
-  private[syntax] implicit class AsyncToMongoOpt[A](val cb: Either[Throwable, Option[A]] => Unit)
+object implicits {
+
+  private[implicits] implicit class AsyncToMongoOpt[A](
+      val cb: Either[Throwable, Option[A]] => Unit)
       extends AnyVal {
     def toMongo: SingleResultCallback[A] = toMongo(identity)
 
@@ -23,7 +26,7 @@ object syntax {
     }
   }
 
-  private[syntax] implicit class AsyncToMongo[A](val cb: Either[Throwable, A] => Unit)
+  private[implicits] implicit class AsyncToMongo[A](val cb: Either[Throwable, A] => Unit)
       extends AnyVal {
     def toMongo: SingleResultCallback[A] = toMongo(identity)
 
@@ -39,25 +42,27 @@ object syntax {
     }
   }
 
-  implicit class MongoIterableSyntax[A, B](iterable: A)(implicit ev: A <:< MongoIterable[B],
-                                                        S: Strategy) {
-    private def asyncNext[T](cursor: AsyncBatchCursor[T]): Task[Option[Seq[T]]] = {
+  implicit class MongoIterableSyntax[A, B](iterable: A)(implicit ev: A <:< MongoIterable[B]) {
+    private def asyncNext[F[_], T](cursor: AsyncBatchCursor[T])(implicit A: Async[F],
+                                                                S: Strategy): F[Option[Seq[T]]] = {
       if (cursor.isClosed) {
-        Task.now(None)
+        A.pure(None)
       } else {
-        Task.suspend {
-          Task.async { cb =>
-            cursor.next(cb.toMongo(_.asScala))
+        A.suspend {
+          A.async { cb =>
+            A.delay(cursor.next(cb.toMongo(_.asScala)))
           }
         }
       }
     }
 
-    private def closeCursor(maybeCursor: Option[AsyncBatchCursor[_]]): Task[Unit] =
-      maybeCursor.fold(Task.now(()))(cursor => Task.delay(cursor.close()))
+    private def closeCursor[F[_]](maybeCursor: Option[AsyncBatchCursor[_]])(implicit A: Async[F],
+                                                                            S: Strategy): F[Unit] =
+      maybeCursor.fold(A.pure(()))(cursor => A.delay(cursor.close()))
 
-    private def iterate(maybeCursor: Option[AsyncBatchCursor[B]])(
-        implicit S: Strategy): Stream[Task, B] = {
+    private def iterate[F[_]](maybeCursor: Option[AsyncBatchCursor[B]])(
+        implicit A: Async[F],
+        S: Strategy): Stream[F, B] = {
       maybeCursor match {
         case None =>
           Stream.empty
@@ -70,17 +75,17 @@ object syntax {
       }
     }
 
-    private def asyncBatchCursor(implicit S: Strategy): Task[Option[AsyncBatchCursor[B]]] = {
-      Task.suspend {
-        Task.async { cb =>
-          ev(iterable).batchCursor(cb.toMongo)
+    private def asyncBatchCursor[F[_]](implicit A: Async[F],
+                                       S: Strategy): F[Option[AsyncBatchCursor[B]]] = {
+      A.suspend {
+        A.async { cb =>
+          A.delay(ev(iterable).batchCursor(cb.toMongo))
         }
       }
     }
 
-    val stream: Stream[Task, B] = {
-      Stream.bracket(asyncBatchCursor)(iterate, closeCursor)
+    def stream[F[_]](implicit A: Async[F], S: Strategy): Stream[F, B] = {
+      Stream.bracket(asyncBatchCursor[F])(iterate[F], closeCursor[F])
     }
   }
-
 }
