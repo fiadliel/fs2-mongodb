@@ -42,8 +42,8 @@ object imports {
   }
 
   implicit class MongoIterableSyntax[A, B](iterable: A)(implicit ev: A <:< MongoIterable[B]) {
-    private def asyncNext[F[_], T](cursor: AsyncBatchCursor[T])(implicit A: Async[F],
-                                                                S: Strategy): F[Option[Seq[T]]] = {
+    private def asyncNext[F[_], T](cursor: AsyncBatchCursor[T])(
+        implicit A: Async[F]): F[Option[Seq[T]]] = {
       if (cursor.isClosed) {
         A.pure(None)
       } else {
@@ -55,13 +55,11 @@ object imports {
       }
     }
 
-    private def closeCursor[F[_]](maybeCursor: Option[AsyncBatchCursor[_]])(implicit A: Async[F],
-                                                                            S: Strategy): F[Unit] =
+    private def closeCursor[F[_]](maybeCursor: Option[AsyncBatchCursor[_]])(
+        implicit A: Async[F]): F[Unit] =
       maybeCursor.fold(A.pure(()))(cursor => A.delay(cursor.close()))
 
-    private def iterate[F[_]](maybeCursor: Option[AsyncBatchCursor[B]])(
-        implicit A: Async[F],
-        S: Strategy): Stream[F, B] = {
+    private def iterate[F[_]: Async](maybeCursor: Option[AsyncBatchCursor[B]]): Stream[F, B] = {
       maybeCursor match {
         case None =>
           Stream.empty
@@ -74,8 +72,7 @@ object imports {
       }
     }
 
-    private def asyncBatchCursor[F[_]](implicit A: Async[F],
-                                       S: Strategy): F[Option[AsyncBatchCursor[B]]] = {
+    private def asyncBatchCursor[F[_]](implicit A: Async[F]): F[Option[AsyncBatchCursor[B]]] = {
       A.suspend {
         A.async { cb =>
           A.delay(ev(iterable).batchCursor(cb.toMongo))
@@ -83,7 +80,7 @@ object imports {
       }
     }
 
-    def stream[F[_]](implicit A: Async[F], S: Strategy): Stream[F, B] = {
+    def stream[F[_]: Async]: Stream[F, B] = {
       Stream.bracket(asyncBatchCursor[F])(iterate[F], closeCursor[F])
     }
   }
