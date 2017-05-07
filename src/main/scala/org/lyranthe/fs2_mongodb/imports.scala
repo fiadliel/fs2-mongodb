@@ -8,6 +8,7 @@ import fs2.util.Async
 import scala.collection.JavaConverters._
 
 object imports {
+  final val Mongo = org.lyranthe.fs2_mongodb.Mongo
 
   private[imports] implicit class AsyncToMongoOpt[A](val cb: Either[Throwable, Option[A]] => Unit)
       extends AnyVal {
