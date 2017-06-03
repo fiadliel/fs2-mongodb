@@ -3,7 +3,7 @@ package org.lyranthe.fs2_mongodb
 import com.mongodb.async.client.MongoIterable
 import com.mongodb.async.{AsyncBatchCursor, SingleResultCallback}
 import fs2._
-import fs2.util.Async
+import cats.effect.Async
 
 import scala.collection.JavaConverters._
 
