@@ -48,10 +48,8 @@ object imports {
       if (cursor.isClosed) {
         A.pure(None)
       } else {
-        A.suspend {
-          A.async { cb =>
-            A.delay(cursor.next(cb.toMongo(_.asScala)))
-          }
+        A.async { cb =>
+          A.delay(cursor.next(cb.toMongo(_.asScala)))
         }
       }
     }
@@ -68,7 +66,7 @@ object imports {
         case Some(cursor) =>
           Stream
             .repeatEval(asyncNext(cursor))
-            .through(pipe.unNoneTerminate)
+            .unNoneTerminate
             .flatMap(values => Stream.chunk(Chunk.seq(values)))
       }
     }
