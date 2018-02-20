@@ -14,6 +14,7 @@ enablePlugins(GitVersioning)
 publishTo := sonatypePublishTo.value
 sonatypeProfileName := "org.lyranthe"
 publishMavenStyle := true
+licenses in Global += "MIT" -> url("https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE")
 
 import xerial.sbt.Sonatype._
 sonatypeProjectHosting := Some(GitHubHosting("fiadliel", "fs2-mongodb", "Gary Coady", "gary@lyranthe.org"))
