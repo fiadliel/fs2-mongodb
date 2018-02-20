@@ -36,6 +36,10 @@ When you have a value of type `com.mongodb.async.client.MongoIterable`, you can 
 a `fs2.Stream[Task, Document]` by calling `.stream[IO]`. You can supply any type (other
 than `IO`) if there is a `cats.effect.Async` typeclass instance available for it.
 
+One common requirement is to change the batch size for requests. This functionality is
+available on the `MongoIterable` type, so you can chain a call like `.batchSize(1000)`
+before turning it into a stream.
+
 ## Example
 
 ```scala
