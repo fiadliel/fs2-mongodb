@@ -1,13 +1,13 @@
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
-crossScalaVersions := List("2.11.11", "2.12.2")
+crossScalaVersions := List("2.11.12", "2.12.4")
 
 organization := "org.lyranthe"
 
 name := "fs2-mongodb"
 
-libraryDependencies += "org.mongodb" % "mongodb-driver-async" % "3.6.0-rc0"
-libraryDependencies += "co.fs2"      %% "fs2-core"            % "0.10.0-M8"
+libraryDependencies += "org.mongodb" % "mongodb-driver-async" % "3.6.3"
+libraryDependencies += "co.fs2"      %% "fs2-core"            % "0.10.2"
 
 enablePlugins(GitVersioning)
 

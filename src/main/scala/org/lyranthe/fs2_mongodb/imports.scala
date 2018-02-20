@@ -49,7 +49,7 @@ object imports {
         A.pure(None)
       } else {
         A.async { cb =>
-          A.delay(cursor.next(cb.toMongo(_.asScala)))
+          cursor.next(cb.toMongo(_.asScala))
         }
       }
     }
@@ -74,7 +74,7 @@ object imports {
     private def asyncBatchCursor[F[_]](implicit A: Async[F]): F[Option[AsyncBatchCursor[B]]] = {
       A.suspend {
         A.async { cb =>
-          A.delay(ev(iterable).batchCursor(cb.toMongo))
+          ev(iterable).batchCursor(cb.toMongo)
         }
       }
     }
