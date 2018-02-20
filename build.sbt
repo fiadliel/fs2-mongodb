@@ -11,9 +11,9 @@ libraryDependencies += "co.fs2"      %% "fs2-core"            % "0.10.2"
 
 enablePlugins(GitVersioning)
 
-homepage in Global := Some(url("https://github.com/fiadliel/fs2-mongodb"))
-licenses in Global += "MIT" -> url("https://github.com/fiadliel/fs2-mongodb/blob/master/LICENSE")
-developers in Global += Developer("fiadliel",
-                                  "Gary Coady",
-                                  "gary@lyranthe.org",
-                                  url("https://www.lyranthe.org/"))
+publishTo := sonatypePublishTo.value
+sonatypeProfileName := "org.lyranthe"
+publishMavenStyle := true
+
+import xerial.sbt.Sonatype._
+sonatypeProjectHosting := Some(GitHubHosting("fiadliel", "fs2-mongodb", "Gary Coady", "gary@lyranthe.org"))
