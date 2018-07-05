@@ -5,16 +5,18 @@ import fs2._
 import cats.effect.Sync
 
 object Mongo {
+
   def fromUrl[F[_]](url: String)(implicit F: Sync[F]): Stream[F, MongoClient] = {
-    Stream.bracket(F.delay(MongoClients.create(url)))(Stream.emit(_), { client =>
-      F.delay(client.close())
-    })
+    createStream(MongoClients.create(url))
   }
 
-  def fromSettings[F[_]](settings: MongoClientSettings)(
-      implicit F: Sync[F]): Stream[F, MongoClient] = {
-    Stream.bracket(F.delay(MongoClients.create(settings)))(Stream.emit(_), { client =>
+  def fromSettings[F[_]](settings: MongoClientSettings)(implicit F: Sync[F]): Stream[F, MongoClient] = {
+    createStream(MongoClients.create(settings))
+  }
+
+  private def createStream[F[_]](mongoClient: => MongoClient)(implicit F: Sync[F]): Stream[F, MongoClient] = {
+    Stream.bracket(F.delay(mongoClient)) { client =>
       F.delay(client.close())
-    })
+    }
   }
 }
