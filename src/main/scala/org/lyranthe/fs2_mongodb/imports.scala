@@ -84,7 +84,7 @@ object imports {
     }
 
     def stream[F[_]: Async]: Stream[F, B] = {
-      Stream.bracket(asyncBatchCursor[F])(iterate[F], closeCursor[F])
+      Stream.bracket(asyncBatchCursor[F])(closeCursor[F]).flatMap(iterate[F])
     }
   }
 
