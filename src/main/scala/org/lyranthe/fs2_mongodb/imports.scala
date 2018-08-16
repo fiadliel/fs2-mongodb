@@ -106,7 +106,7 @@ class MongoCollectionEffect[F[_], A](val underlying: MongoCollection[A]) extends
   def count(implicit F: Async[F]): F[Long] = {
     Async[F]
       .async[java.lang.Long] { cb =>
-        underlying.count(cb.toMongo)
+        underlying.countDocuments(cb.toMongo)
       }
       .map(_.longValue())
   }
@@ -114,7 +114,7 @@ class MongoCollectionEffect[F[_], A](val underlying: MongoCollection[A]) extends
   def count(filter: Bson)(implicit F: Async[F]): F[Long] = {
     Async[F]
       .async[java.lang.Long] { cb =>
-        underlying.count(filter, cb.toMongo)
+        underlying.countDocuments(filter, cb.toMongo)
       }
       .map(_.longValue())
   }
