@@ -7,7 +7,7 @@ Library offers a very basic interface to stream results from MongoDB
 Add the following to your `build.sbt`:
 
 ```scala
-libraryDependencies += "org.lyranthe" %% "fs2-mongodb" % "0.2.0"
+libraryDependencies += "org.lyranthe" %% "fs2-mongodb" % "0.4.0"
 ```
 
 ## Usage
