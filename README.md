@@ -26,7 +26,7 @@ which will be closed after use by FS2:
 This takes a string representing a MongoDB URL (e.g. `mongodb://localhost`).
 
 *`Mongo.fromSettings[F]`*
-This takes a `com.mongodb.async.client.MongoClientSettings` object, and uses to set
+This takes a `com.mongodb.MongoClientSettings` object, and uses to set
 up the client (this can include connecting to multiple databases, required authentication
 information, etc.).
 
