@@ -8,14 +8,13 @@ import cats.effect.Sync
 
 object Mongo {
   def fromUrl[F[_]](url: String)(implicit F: Sync[F]): Stream[F, MongoClient] = {
-    Stream.bracket(F.delay(MongoClients.create(url)))(Stream.emit(_), { client =>
+    Stream.bracket(F.delay(MongoClients.create(url))){ client =>
       F.delay(client.close())
-    })
+    }
   }
   def fromSettings[F[_]](settings: MongoClientSettings)(
     implicit F: Sync[F]): Stream[F, MongoClient] = {
-    Stream.bracket(F.delay(MongoClients.create(settings)))(Stream.emit(_), { client =>
-      F.delay(client.close())
-    })
+    Stream.bracket(F.delay(MongoClients.create(settings)))(client =>
+      F.delay(client.close()))
   }
 }
