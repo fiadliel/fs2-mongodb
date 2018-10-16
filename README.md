@@ -7,7 +7,7 @@ Library offers a very basic interface to stream results from MongoDB
 Add the following to your `build.sbt`:
 
 ```scala
-libraryDependencies += "org.lyranthe" %% "fs2-mongodb" % "0.4.0"
+libraryDependencies += "org.lyranthe" %% "fs2-mongodb" % "0.5.0"
 ```
 
 ## Usage
@@ -19,8 +19,8 @@ import org.lyranthe.fs2_mongodb.imports._
 
 ### Creating a client
 
-There are two ways of creating a `Stream[F, com.mongodb.async.client.MongoClient]`
-which will be closed after use by FS2:
+There are two ways of creating a `Resource[F, com.mongodb.async.client.MongoClient]`
+which will be closed after use:
 
 *`Mongo.fromUrl[F]`*
 This takes a string representing a MongoDB URL (e.g. `mongodb://localhost`).
@@ -33,7 +33,7 @@ information, etc.).
 ### Streaming iterables
 
 When you have a value of type `com.mongodb.async.client.MongoIterable`, you can turn it into
-a `fs2.Stream[Task, Document]` by calling `.stream[IO]`. You can supply any type (other
+a `fs2.Stream[IO, Document]` by calling `.stream[IO]`. You can supply any type (other
 than `IO`) if there is a `cats.effect.Async` typeclass instance available for it.
 
 One common requirement is to change the batch size for requests. This functionality is
@@ -50,7 +50,7 @@ import org.lyranthe.fs2_mongodb.imports._
 
 val allDocuments: Stream[IO, Document] =
   for {
-    conn <- Mongo.fromUrl[IO]("mongodb://localhost")
+    conn <- Stream.resource(Mongo.fromUrl[IO]("mongodb://localhost"))
     database = conn.getDatabase("test_db")
     collection = database.getCollection("test_collection")
     document <- collection.find().stream[IO]
