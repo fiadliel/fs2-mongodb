@@ -16,298 +16,249 @@ private[fs2_mongodb] final class MongoCollectionEffect[F[_], A](
   extends AnyVal {
   import imports.AsyncToMongo
 
-  def bulkWrite(requests: Seq[WriteModel[A]])(implicit F: Async[F]): F[BulkWriteResult] = {
-    Async[F]
-      .async[BulkWriteResult] { cb =>
-        underlying.bulkWrite(requests.asJava, cb.toMongo)
-      }
-  }
+  @inline
+  def bulkWrite(requests: Seq[WriteModel[A]])(implicit F: Async[F]): F[BulkWriteResult] =
+    F.async[BulkWriteResult] { cb =>
+      underlying.bulkWrite(requests.asJava, cb.toMongo)
+    }
 
+  @inline
   def bulkWrite(requests: Seq[WriteModel[A]], options: BulkWriteOptions)
-               (implicit F: Async[F]): F[BulkWriteResult] = {
-    Async[F]
-      .async[BulkWriteResult] { cb =>
-        underlying.bulkWrite(requests.asJava, options, cb.toMongo)
-      }
-  }
+               (implicit F: Async[F]): F[BulkWriteResult] =
+    F.async[BulkWriteResult] { cb =>
+      underlying.bulkWrite(requests.asJava, options, cb.toMongo)
+    }
 
-  def count()(implicit F: Async[F]): F[Long] = {
-    Async[F]
-      .async[java.lang.Long] { cb =>
-        underlying.countDocuments(cb.toMongo)
-      }
-      .map(_.longValue())
-  }
+  @inline
+  def count()(implicit F: Async[F]): F[Long] =
+    F.async[java.lang.Long] { cb =>
+      underlying.countDocuments(cb.toMongo)
+    } map { count =>
+      count.toLong
+    }
 
-  def count(filter: Bson)(implicit F: Async[F]): F[Long] = {
-    Async[F]
-      .async[java.lang.Long] { cb =>
-        underlying.countDocuments(filter, cb.toMongo)
-      }
-      .map(_.longValue())
-  }
+  @inline
+  def count(filter: Bson)(implicit F: Async[F]): F[Long] =
+    F.async[java.lang.Long] { cb =>
+      underlying.countDocuments(filter, cb.toMongo)
+    } map { count =>
+      count.toLong
+    }
 
-  def count(filter: Bson, options: CountOptions)(implicit F: Async[F]): F[Long] = {
-    Async[F]
-      .async[java.lang.Long] { cb =>
-        underlying.countDocuments(filter, options, cb.toMongo)
-      }
-      .map(_.longValue())
-  }
+  @inline
+  def count(filter: Bson, options: CountOptions)(implicit F: Async[F]): F[Long] =
+    F.async[java.lang.Long] { cb =>
+      underlying.countDocuments(filter, options, cb.toMongo)
+    } map { count =>
+      count.toLong
+    }
 
-  def createIndex(key: Bson)(implicit F: Async[F]): F[String] = {
-    Async[F]
-      .async[String] { cb =>
-        underlying.createIndex(key, cb.toMongo)
-      }
-  }
+  @inline
+  def createIndex(key: Bson)(implicit F: Async[F]): F[String] =
+    F.async[String] { cb =>
+      underlying.createIndex(key, cb.toMongo)
+    }
 
-  def createIndex(key: Bson, options: IndexOptions)(implicit F: Async[F]): F[String] = {
-    Async[F]
-      .async[String] { cb =>
-        underlying.createIndex(key, options, cb.toMongo)
-      }
-  }
+  @inline
+  def createIndex(key: Bson, options: IndexOptions)(implicit F: Async[F]): F[String] =
+    F.async[String] { cb =>
+      underlying.createIndex(key, options, cb.toMongo)
+    }
 
-  def createIndexes(indexes: Seq[IndexModel])(implicit F: Async[F]): F[Seq[String]] = {
-    Async[F]
-      .async[java.util.List[String]] { cb =>
-        underlying.createIndexes(indexes.asJava, cb.toMongo)
-      }
-      .map(_.asScala)
-  }
+  @inline
+  def createIndexes(indexes: Seq[IndexModel])(implicit F: Async[F]): F[Seq[String]] =
+    F.async[java.util.List[String]] { cb =>
+      underlying.createIndexes(indexes.asJava, cb.toMongo)
+    } map { indexes =>
+      indexes.asScala
+    }
 
+  @inline
   def createIndexes(indexes: Seq[IndexModel], options: CreateIndexOptions)
-                   (implicit F: Async[F]): F[Seq[String]] = {
-    Async[F]
-      .async[java.util.List[String]] { cb =>
-        underlying.createIndexes(indexes.asJava, options, cb.toMongo)
-      }
-      .map(_.asScala)
-  }
+                   (implicit F: Async[F]): F[Seq[String]] =
+    F.async[java.util.List[String]] { cb =>
+      underlying.createIndexes(indexes.asJava, options, cb.toMongo)
+    } map { indexes =>
+      indexes.asScala
+    }
 
-  def deleteMany(filter: Bson)(implicit F: Async[F]): F[DeleteResult] = {
-    Async[F]
-      .async[DeleteResult] { cb =>
-        underlying.deleteMany(filter, cb.toMongo)
-      }
-  }
+  @inline
+  def deleteMany(filter: Bson)(implicit F: Async[F]): F[DeleteResult] =
+    F.async[DeleteResult] { cb =>
+      underlying.deleteMany(filter, cb.toMongo)
+    }
 
-  def deleteMany(filter: Bson, options: DeleteOptions)
-                (implicit F: Async[F]): F[DeleteResult] = {
-    Async[F]
-      .async[DeleteResult] { cb =>
-        underlying.deleteMany(filter, options, cb.toMongo)
-      }
-  }
+  @inline
+  def deleteMany(filter: Bson, options: DeleteOptions)(implicit F: Async[F]): F[DeleteResult] =
+    F.async[DeleteResult] { cb =>
+      underlying.deleteMany(filter, options, cb.toMongo)
+    }
 
-  def deleteOne(filter: Bson)(implicit F: Async[F]): F[DeleteResult] = {
-    Async[F]
-      .async[DeleteResult] { cb =>
-        underlying.deleteOne(filter, cb.toMongo)
-      }
-  }
+  @inline
+  def deleteOne(filter: Bson)(implicit F: Async[F]): F[DeleteResult] =
+    F.async[DeleteResult] { cb =>
+      underlying.deleteOne(filter, cb.toMongo)
+    }
 
-  def deleteOne(filter: Bson, options: DeleteOptions)(implicit F: Async[F]): F[DeleteResult] = {
-    Async[F]
-      .async[DeleteResult] { cb =>
-        underlying.deleteOne(filter, options, cb.toMongo)
-      }
-  }
+  @inline
+  def deleteOne(filter: Bson, options: DeleteOptions)(implicit F: Async[F]): F[DeleteResult] =
+    F.async[DeleteResult] { cb =>
+      underlying.deleteOne(filter, options, cb.toMongo)
+    }
 
-  def drop()(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.drop(cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def drop()(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.drop(cb.toMongo)
+    }.void
 
-  def dropIndex(indexName: String)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndex(indexName, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndex(indexName: String)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndex(indexName, cb.toMongo)
+    }.void
 
-  def dropIndex(indexName: String, options: DropIndexOptions)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndex(indexName, options, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndex(indexName: String, options: DropIndexOptions)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndex(indexName, options, cb.toMongo)
+    }.void
 
-  def dropIndex(keys: Bson)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndex(keys, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndex(keys: Bson)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndex(keys, cb.toMongo)
+    }.void
 
-  def dropIndex(keys: Bson, options: DropIndexOptions)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndex(keys, options, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndex(keys: Bson, options: DropIndexOptions)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndex(keys, options, cb.toMongo)
+    }.void
 
-  def dropIndexes()(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndexes(cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndexes()(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndexes(cb.toMongo)
+    }.void
 
-  def dropIndexes(options: DropIndexOptions)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.dropIndexes(options, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def dropIndexes(options: DropIndexOptions)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.dropIndexes(options, cb.toMongo)
+    }.void
 
-  def findOneAndDelete(filter: Bson)(implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndDelete(filter, cb.toMongo)
-      }
-  }
+  @inline
+  def findOneAndDelete(filter: Bson)(implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndDelete(filter, cb.toMongo)
+    }
 
-  def findOneAndDelete(filter: Bson, options: FindOneAndDeleteOptions)
-                      (implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndDelete(filter, options, cb.toMongo)
-      }
-  }
+  @inline
+  def findOneAndDelete(filter: Bson, options: FindOneAndDeleteOptions)(implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndDelete(filter, options, cb.toMongo)
+    }
 
-  def findOneAndReplace(filter: Bson, replacement: A)(implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndReplace(filter, replacement, cb.toMongo)
-      }
-  }
+  @inline
+  def findOneAndReplace(filter: Bson, replacement: A)(implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndReplace(filter, replacement, cb.toMongo)
+    }
 
+  @inline
   def findOneAndReplace(filter: Bson, replacement: A, options: FindOneAndReplaceOptions)
-                       (implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndReplace(filter, replacement, options, cb.toMongo)
-      }
-  }
+                       (implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndReplace(filter, replacement, options, cb.toMongo)
+    }
 
-  def findOneAndUpdate(filter: Bson, update: Bson)(implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndUpdate(filter, update, cb.toMongo)
-      }
-  }
+  @inline
+  def findOneAndUpdate(filter: Bson, update: Bson)(implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndUpdate(filter, update, cb.toMongo)
+    }
 
+  @inline
   def findOneAndUpdate(filter: Bson, update: Bson, options: FindOneAndUpdateOptions)
-                      (implicit F: Async[F]): F[A] = {
-    Async[F]
-      .async[A] { cb =>
-        underlying.findOneAndUpdate(filter, update, options, cb.toMongo)
-      }
-  }
+                      (implicit F: Async[F]): F[A] =
+    F.async[A] { cb =>
+      underlying.findOneAndUpdate(filter, update, options, cb.toMongo)
+    }
 
-  def insertMany(documents: Seq[A])(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.insertMany(documents.asJava, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def insertMany(documents: Seq[A])(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.insertMany(documents.asJava, cb.toMongo)
+    }.void
 
-  def insertMany(documents: Seq[A], options: InsertManyOptions)
-                (implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.insertMany(documents.asJava, options, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def insertMany(documents: Seq[A], options: InsertManyOptions)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.insertMany(documents.asJava, options, cb.toMongo)
+    }.void
 
-  def insertOne(document: A)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.insertOne(document, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def insertOne(document: A)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.insertOne(document, cb.toMongo)
+    }.void
 
-  def insertOne(document: A, options: InsertOneOptions)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.insertOne(document, options, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def insertOne(document: A, options: InsertOneOptions)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.insertOne(document, options, cb.toMongo)
+    }.void
 
-  def renameCollection(newCollectionName: MongoNamespace)(implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.renameCollection(newCollectionName, cb.toMongo)
-      }
-      .void
-  }
+  @inline
+  def renameCollection(newCollectionName: MongoNamespace)(implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.renameCollection(newCollectionName, cb.toMongo)
+    }.void
 
+  @inline
   def renameCollection(newCollectionName: MongoNamespace, options: RenameCollectionOptions)
-                      (implicit F: Async[F]): F[Unit] = {
-    Async[F]
-      .async[Void] { cb =>
-        underlying.renameCollection(newCollectionName, options, cb.toMongo)
-      }
-      .void
-  }
+                      (implicit F: Async[F]): F[Unit] =
+    F.async[Void] { cb =>
+      underlying.renameCollection(newCollectionName, options, cb.toMongo)
+    }.void
 
-  def replaceOne(filter: Bson, replacement: A)(implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.replaceOne(filter, replacement, cb.toMongo)
-      }
-  }
+  @inline
+  def replaceOne(filter: Bson, replacement: A)(implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.replaceOne(filter, replacement, cb.toMongo)
+    }
 
+  @inline
   def replaceOne(filter: Bson, replacement: A, options: ReplaceOptions)
-                (implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.replaceOne(filter, replacement, options, cb.toMongo)
-      }
-  }
+                (implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.replaceOne(filter, replacement, options, cb.toMongo)
+    }
 
-  def updateMany(filter: Bson, update: Bson)(implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.updateMany(filter, update, cb.toMongo)
-      }
-  }
+  @inline
+  def updateMany(filter: Bson, update: Bson)(implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.updateMany(filter, update, cb.toMongo)
+    }
 
+  @inline
   def updateMany(filter: Bson, update: Bson, options: UpdateOptions)
-                (implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.updateMany(filter, update, options, cb.toMongo)
-      }
-  }
+                (implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.updateMany(filter, update, options, cb.toMongo)
+    }
 
-  def updateOne(filter: Bson, update: Bson)(implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.updateOne(filter, update, cb.toMongo)
-      }
-  }
+  @inline
+  def updateOne(filter: Bson, update: Bson)(implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.updateOne(filter, update, cb.toMongo)
+    }
 
+  @inline
   def updateOne(filter: Bson, update: Bson, options: UpdateOptions)
-               (implicit F: Async[F]): F[UpdateResult] = {
-    Async[F]
-      .async[UpdateResult] { cb =>
-        underlying.updateOne(filter, update, options, cb.toMongo)
-      }
-  }
+               (implicit F: Async[F]): F[UpdateResult] =
+    F.async[UpdateResult] { cb =>
+      underlying.updateOne(filter, update, options, cb.toMongo)
+    }
 }
