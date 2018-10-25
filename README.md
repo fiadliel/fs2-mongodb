@@ -44,7 +44,7 @@ before turning it into a stream.
 
 ```scala
 import cats.effect.IO
-import fs2._
+import fs2.Stream
 import org.bson.Document
 import org.lyranthe.fs2_mongodb.imports._
 
@@ -55,4 +55,29 @@ val allDocuments: Stream[IO, Document] =
     collection = database.getCollection("test_collection")
     document <- collection.find().stream[IO]
   } yield document
+```
+
+### Pure collections
+
+You can get a pure version of all other mongo collection methods that
+doesn't return a `MongoIterable` by calling `.effect[IO]` on the collection.
+You can supply any type (other than `IO`) if there is a `cats.effect.Async`
+typeclass instance available for it.
+
+By pure we mean that the side effect is encapsulated in a _Data Type_ (e.g. `IO`).
+
+## Example
+
+```scala
+import cats.effect.IO
+import fs2.Stream
+import org.lyranthe.fs2_mongodb.imports._
+
+val totalDocuments: Stream[IO, Long] =
+  for {
+    conn <- Stream.resource(Mongo.fromUrl[IO]("mongodb://localhost"))
+    database = conn.getDatabase("test_db")
+    collection = database.getCollection("test_collection")
+    count <- Stream.eval(collection.effect[IO].count())
+  } yield count
 ```
